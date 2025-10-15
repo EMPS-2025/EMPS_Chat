@@ -1,0 +1,60 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: px_db
+    environment:
+      POSTGRES_DB: power_exchange
+      POSTGRES_USER: power_user
+      POSTGRES_PASSWORD: power_pass
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "power_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: infra/docker/backend.Dockerfile
+    environment:
+      APP_ENV: dev
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: power_exchange
+      DB_USER: power_user
+      DB_PASSWORD: power_pass
+      ALLOWED_ORIGINS: http://localhost:3000,http://localhost:8000
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./.env.example:/app/.env:ro
+    command: ["/bin/sh", "-c", "alembic upgrade head && uvicorn app.api.main:app --host 0.0.0.0 --port 8000"]
+
+  chainlit:
+    build:
+      context: .
+      dockerfile: infra/docker/chainlit.Dockerfile
+    environment:
+      BACKEND_URL: http://backend:8000
+    depends_on:
+      backend:
+        condition: service_started
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./data:/app/data
+      - ./.env.example:/app/.env:ro
+    command: ["chainlit", "run", "app/chatbot/app.py", "-h", "0.0.0.0", "-p", "8001"]
+
+volumes:
+  pgdata:
