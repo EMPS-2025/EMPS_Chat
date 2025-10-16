@@ -4,7 +4,10 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 COPY requirements.txt ./
+
 RUN pip install --no-cache-dir chainlit==1.0.200 fastapi==0.108.0 httpx==0.24.1 pydantic==2.6.4
+
+RUN pip install --no-cache-dir chainlit==1.0.200 httpx==0.27.0 pydantic==2.6.4
 
 COPY . .
 
