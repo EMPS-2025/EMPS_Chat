@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# Envs & IDE
+.env
+.env.*
+.venv/
+venv/
+env/
+.idea/
+.vscode/
+.DS_Store
+.ipynb_checkpoints/
+
+# Builds & dists
+build/
+dist/
+*.egg-info/
+
+# Local data & logs (keep if you really intend to version data)
+data/
+logs/
