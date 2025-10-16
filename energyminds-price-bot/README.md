@@ -87,6 +87,7 @@ Run on port `8001` with `chainlit run app/chatbot/app.py`. A lightweight NLP par
 > **Note:** Chainlit depends on an older FastAPI release. If you need to run the chatbot outside Docker, create a separate
 > virtual environment and install `requirements.chainlit.txt` there to avoid dependency conflicts with the backend stack.
 
+
 3. Run the stack:
 
 ```bash
